@@ -1,6 +1,6 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 let
-  impure = dir: "${config.home.homeDirectory}/.flake/home-manager/${dir}";
+  impure = dir: "${config.home.homeDirectory}/.flake/config/${dir}";
   path = dir: config.lib.file.mkOutOfStoreSymlink (impure dir);
 in
 {
@@ -121,7 +121,7 @@ in
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
     defaultKeymap = "emacs";
-    initExtra = "source ~/.flake/home-manager/zsh/setup.zsh";
+    initExtra = "source ~/.flake/config/zsh/setup.zsh";
     shellAliases = {
       ga = "git add";
       gd = "git diff";
