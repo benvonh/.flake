@@ -47,7 +47,24 @@ require('lazy').setup({
     {	-- session manager
         'rmagatti/auto-session'
     },
-	{
+    {   -- tmux integration
+        'christoomey/vim-tmux-navigator',
+        cmd = {
+            'TmuxNavigateLeft',
+            'TmuxNavigateDown',
+            'TmuxNavigateUp',
+            'TmuxNavigateRight',
+            'TmuxNavigatePrevious'
+        },
+        keys = {
+            { '<c-h>', '<cmd><c-u>TmuxNavigateLeft<cr>' },
+            { '<c-j>', '<cmd><c-u>TmuxNavigateDown<cr>' },
+            { '<c-k>', '<cmd><c-u>TmuxNavigateUp<cr>' },
+            { '<c-l>', '<cmd><c-u>TmuxNavigateRight<cr>' },
+            { '<c-\\>', '<cmd><c-u>TmuxNavigatePrevious<cr>' }
+        }
+    },
+	{   -- language servers
 		'VonHeikemen/lsp-zero.nvim', branch = 'v3.x',
 		dependencies = {
 			'williamboman/mason.nvim',

@@ -16,7 +16,7 @@ cd ~/.flake
 nix-shell
 ```
 
-3. Create a custom NixOS configuration by adding one in `flake.nix` and creating a new system folder.
+3. Create a custom NixOS configuration by adding one in `flake.nix` and creating a new host folder.
 
 ```sh
 vim flake.nix
@@ -87,4 +87,4 @@ home-manager switch --flake ~/.flake
 
 ---
 
-Shout out to [Misterio77](https://github.com/misterio77) for his [nix-starter-configs](https://github.com/misterio77/nix-starter-configs)
+Shout out to [Misterio77](https://github.com/misterio77) for his [nix-starter-configs](https://github.com/misterio77/nix-starter-configs).

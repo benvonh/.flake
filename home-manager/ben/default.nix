@@ -4,9 +4,6 @@ let
   path = dir: config.lib.file.mkOutOfStoreSymlink (impure dir);
 in
 {
-  imports = [
-  ];
-
   nixpkgs = {
     overlays = [
       outputs.overlays.additions
@@ -25,6 +22,7 @@ in
     packages = with pkgs; [
       vlc
       brave
+      steam
       discord
       mission-center
       gnome.nautilus
@@ -53,6 +51,7 @@ in
       ripgrep
       tree-sitter
 
+      jq
       avizo
       eww-wayland
       mako
@@ -121,7 +120,8 @@ in
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
     defaultKeymap = "emacs";
-    initExtra = "source ~/.flake/config/zsh/setup.zsh";
+    initExtra = "source ${(impure "zsh/setup.zsh")}";
+    # initExtra = "source ~/.flake/config/zsh/setup.zsh";
     shellAliases = {
       ga = "git add";
       gd = "git diff";
@@ -144,6 +144,29 @@ in
         }
       ];
     };
+  };
+
+  programs.tmux = {
+    enable = true;
+    mouse = true;
+    baseIndex = 1;
+    shell = "${pkgs.zsh}/bin/zsh";
+    terminal = "kitty";
+    shortcut = "s";
+    extraConfig = ''
+      set -g status-position top
+    '';
+    plugins = with pkgs; [
+      tmuxPlugins.yank
+      tmuxPlugins.vim-tmux-navigator
+      {
+        plugin = tmuxPlugins.power-theme;
+        extraConfig = ''
+          set -g @tmux_power_left_arrow_icon '''
+          set -g @tmux_power_right_arrow_icon '''
+        '';
+      }
+    ];
   };
 
   programs.kitty = {
@@ -195,7 +218,9 @@ in
     font = {
       size = 10;
       name = "CaskaydiaCove Nerd Font";
-      package = (nerdfonts.override { fonts = [ "CascadiaCode" ]; });
+      package = (nerdfonts.override {
+        fonts = [ "CascadiaCode" ];
+      });
     };
   };
 

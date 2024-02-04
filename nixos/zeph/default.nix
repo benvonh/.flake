@@ -3,8 +3,8 @@
   imports = [
     ./hardware.nix
 
-    inputs.hardware.nixosModules.asus-zephyrus-ga402
     inputs.hyprland.nixosModules.default
+    inputs.hardware.nixosModules.asus-zephyrus-ga402
   ];
 
   nixpkgs = {
@@ -60,7 +60,7 @@
   i18n.defaultLocale = "en_AU.UTF-8";
 
   time.timeZone = "Europe/Berlin";
-  #time.timeZone = "Europe/Australia";
+  #time.timeZone = "Australia/Brisbane";
 
   boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot = {
@@ -70,9 +70,13 @@
 
   users.users = {
     ben = {
-      initialPassword = "bender";
       isNormalUser = true;
-      extraGroups = [ "wheel" "networkmanager" ];
+      initialPassword = "bender";
+      extraGroups = [
+        "wheel"
+        "docker"
+        "networkmanager"
+      ];
     };
   };
 
@@ -100,6 +104,7 @@
   sound.enable = true;
   programs.hyprland.enable = true;
   hardware.pulseaudio.enable = false;
+  virtualisation.docker.enable = true;
 
   system.stateVersion = "23.11";
 }
