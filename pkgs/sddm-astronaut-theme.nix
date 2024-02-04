@@ -5,7 +5,7 @@
 }:
 
 stdenv.mkDerivation rec {
-  pname = "sddm-astronaut-theme.nix";
+  pname = "sddm-astronaut-theme";
   version = "";
 
   src = fetchFromGitHub {
@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
 
   installPhase = ''
     mkdir -p $out/share/sddm/themes/astronaut
-    mv * $out/share/sddm/themes/astronaut/v
+    mv * $out/share/sddm/themes/astronaut/
   '';
 
   postFixup = ''

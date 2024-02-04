@@ -1,15 +1,10 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 let
-  impure = dir: "${config.home.homeDirectory}/home-manager/nixos/home-manager/${dir}";
+  impure = dir: "${config.home.homeDirectory}/.flake/home-manager/${dir}";
   path = dir: config.lib.file.mkOutOfStoreSymlink (impure dir);
 in
 {
   imports = [
-    # If you want to use modules your own flake exports (from modules/home-manager):
-    # outputs.homeManagerModules.example
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
   ];
 
   nixpkgs = {
@@ -39,6 +34,7 @@ in
 
       ranger
 
+      htop
       tldr
       todo
       pfetch
@@ -71,11 +67,12 @@ in
       wlr-randr
       wl-clipboard
       xdg-utils
+
+      inputs.hyprpaper.packages.${system}.default
     ];
   };
 
   programs.home-manager.enable = true;
-  programs.htop.enable = true;
 
   programs.eza = {
     enable = true;
@@ -120,16 +117,33 @@ in
 
   programs.zsh = {
     enable = true;
-    enableCompletion = true;
+    enableCompletion = false;
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
-    historySubstringSearch.enable = true;
-    history = {
-      share = false;
-      ignoreDups = true;
-      expireDuplicateFirst = true;
-    };
     defaultKeymap = "emacs";
+    initExtra = "source ~/.flake/home-manager/zsh/setup.zsh";
+    shellAliases = {
+      ga = "git add";
+      gd = "git diff";
+      gp = "git push";
+      gc = "git commit";
+      gs = "git status";
+      hms = "home-manager switch --flake ~/.flake";
+      nrs = "sudo nixos-rebuild switch --flake ~/.flake";
+    };
+    zplug = {
+      enable = true;
+      plugins = [
+        {
+          name = "romkatv/powerlevel10k";
+          tags = [ as:theme depth:1 ];
+        }
+        {
+          name = "marlonrichert/zsh-autocomplete";
+          tags = [ as:plugin depth:1 ];
+        }
+      ];
+    };
   };
 
   programs.kitty = {
@@ -179,9 +193,9 @@ in
       package = vimix-cursors;
     };
     font = {
-      size = 11;
+      size = 10;
       name = "CaskaydiaCove Nerd Font";
-      package = (nerdfonts.override { fonts = [ "CaskaydiaCove" ]; });
+      package = (nerdfonts.override { fonts = [ "CascadiaCode" ]; });
     };
   };
 

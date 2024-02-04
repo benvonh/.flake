@@ -1,5 +1,5 @@
 {
-  description = "My NixOS configuration";
+  description = "NixOS & Home Manager configurations powered by Nix flakes";
 
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
@@ -11,10 +11,12 @@
     hardware.url = "github:nixos/nixos-hardware";
 
     hyprland.url = "github:hyprwm/hyprland";
+    hyprpaper.url = "github:hyprwm/hyprpaper";
   };
 
   outputs = { self, nixpkgs, home-manager, ...  }@inputs:
   let
+    inherit (self) outputs;
 
     systems = [
       "i686-linux"
@@ -26,20 +28,17 @@
     ];
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
-
-    inherit (self) outputs;
-
   in {
     packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
     formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
 
-    overlays = import ./overlays {inherit inputs;};
+    overlays = import ./overlays { inherit inputs; };
     nixosModules = import ./modules/nixos;
     homeManagerModules = import ./modules/home-manager;
 
     nixosConfigurations = {
       zeph = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs outputs;};
+        specialArgs = { inherit inputs outputs; };
         modules = [
           ./nixos/configuration.nix
         ];
@@ -49,7 +48,7 @@
     homeConfigurations = {
       ben = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = {inherit inputs outputs;};
+        extraSpecialArgs = { inherit inputs outputs; };
         modules = [
           ./home-manager/home.nix
         ];

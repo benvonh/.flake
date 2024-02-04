@@ -1,12 +1,6 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 {
   imports = [
-    # If you want to use modules your own flake exports (from modules/nixos):
-    # outputs.nixosModules.example
-
-    # You can also split up your configuration and import pieces of it here:
-    # ./users.nix
-
     ./hardware.nix
 
     inputs.hardware.nixosModules.asus-zephyrus-ga402
@@ -43,8 +37,8 @@
   networking.hostName = "zeph";
   networking.networkmanager.enable = true;
 
-  services.printing.enable = true;
   services.openssh.enable = true;
+  services.printing.enable = true;
   services.pipewire.enable = true;
   services.pipewire.alsa.enable = true;
   services.pipewire.jack.enable = true;
@@ -68,6 +62,7 @@
   time.timeZone = "Europe/Berlin";
   #time.timeZone = "Europe/Australia";
 
+  boot.kernelPackages = pkgs.linuxPackages_latest;
   boot.loader.systemd-boot = {
     enable = true;
     configurationLimit = 3;
@@ -81,18 +76,20 @@
     };
   };
 
-  font.packages = with pkgs; [
+  fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-cjk
     noto-fonts-emoji
     (nerdfonts.override {
-      fonts = [ "CaskaydiaCove" ];
+      fonts = [ "CascadiaCode" ];
     })
   ];
 
   environment.systemPackages = with pkgs; [
     vim
     git
+    vimix-cursors
+    sddm-astronaut-theme
   ];
 
   xdg.portal = {
