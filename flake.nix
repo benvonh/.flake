@@ -1,20 +1,23 @@
 {
-  description = "NixOS & Home Manager configurations powered by Nix flakes";
+  description = "My NixOS configurations powered by Nix flakes";
 
   inputs = {
     nixpkgs.url = github:nixos/nixpkgs/nixos-23.11;
     nixpkgs-unstable.url = github:nixos/nixpkgs/nixos-unstable;
 
+    neovim.url = github:nix-community/nixvim/nixos-23.11;
+    neovim.inputs.nixpkgs.follows = "nixpkgs";
+
     home-manager.url = github:nix-community/home-manager/release-23.11;
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    hardware.url = github:nixos/nixos-hardware;
-
     hyprland.url = github:hyprwm/hyprland;
     hyprpaper.url = github:hyprwm/hyprpaper;
+
+    hardware.url = github:nixos/nixos-hardware;
   };
 
-  outputs = { self, nixpkgs, home-manager, ...  }@inputs:
+  outputs = { self, nixpkgs, home-manager, ... }@inputs:
   let
     inherit (self) outputs;
 

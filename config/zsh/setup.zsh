@@ -10,4 +10,4 @@ fi
 
 bindkey -M menuselect '\r' .accept-line
 
-export EDITOR=nvim
+# export EDITOR=nvim
