@@ -3,7 +3,6 @@
   imports = [
     ./hardware.nix
 
-    inputs.hyprland.nixosModules.default
     inputs.hardware.nixosModules.asus-zephyrus-ga402
   ];
 
@@ -14,7 +13,7 @@
       outputs.overlays.unstable-packages
     ];
     config = {
-      allowUnfree = true;
+      allowUnfree = false;
     };
   };
 
@@ -30,8 +29,8 @@
     config.nix.registry;
 
   nix.settings = {
-    experimental-features = "nix-command flakes";
     auto-optimise-store = true;
+    experimental-features = "nix-command flakes";
   };
 
   networking.hostName = "zeph";
@@ -41,7 +40,6 @@
   services.printing.enable = true;
   services.pipewire.enable = true;
   services.pipewire.alsa.enable = true;
-  services.pipewire.jack.enable = true;
   services.pipewire.pulse.enable = true;
 
   services.xserver = {
@@ -53,20 +51,27 @@
     };
   };
 
-  security.rtkit.enable = true;
-  security.polkit.enable = true;
-  security.pam.services.swaylock = {};
+  time.timeZone = "Europe/Berlin";
+  # time.timeZone = "Australia/Brisbane";
 
   i18n.defaultLocale = "en_AU.UTF-8";
 
-  time.timeZone = "Europe/Berlin";
-  #time.timeZone = "Australia/Brisbane";
-
   boot.kernelPackages = pkgs.linuxPackages_latest;
-  boot.loader.systemd-boot = {
+  boot.loader.timeout = 60;
+  boot.loader.efi.canTouchEfiVariables = true;
+  boot.loader.grub = {
     enable = true;
+    device = "nodev";
+    efiSupport = true;
+    useOSProber = true;
     configurationLimit = 3;
   };
+
+  hardware.opengl.extraPackages = with pkgs; [
+    amdvlk rocmPackages.clr.icd
+  ];
+
+  environment.variables.AMD_VULKAN_ICD = "RADV";
 
   users.users = {
     ben = {
@@ -96,14 +101,13 @@
     sddm-astronaut-theme
   ];
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
-  };
-
-  sound.enable = true;
   programs.hyprland.enable = true;
-  hardware.pulseaudio.enable = false;
+
+  sound.enable = false;
+
+  security.rtkit.enable = false;
+  security.pam.services.swaylock = {};
+
   virtualisation.docker.enable = true;
 
   system.stateVersion = "23.11";

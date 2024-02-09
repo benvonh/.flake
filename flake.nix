@@ -1,20 +1,17 @@
 {
-  description = "My NixOS configurations powered by Nix flakes";
+  description = "NixOS and Home Manager configurations powered by Nix flakes";
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/nixos-23.11;
-    nixpkgs-unstable.url = github:nixos/nixpkgs/nixos-unstable;
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-23.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    neovim.url = github:nix-community/nixvim/nixos-23.11;
-    neovim.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim.url = "github:nix-community/nixvim/nixos-23.11";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
 
-    home-manager.url = github:nix-community/home-manager/release-23.11;
+    home-manager.url = "github:nix-community/home-manager/release-23.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
-    hyprland.url = github:hyprwm/hyprland;
-    hyprpaper.url = github:hyprwm/hyprpaper;
-
-    hardware.url = github:nixos/nixos-hardware;
+    hardware.url = "github:nixos/nixos-hardware";
   };
 
   outputs = { self, nixpkgs, home-manager, ... }@inputs:
@@ -50,7 +47,7 @@
       ben = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
         extraSpecialArgs = { inherit inputs outputs; };
-        modules = [ ./home-manager/ben ];
+        modules = [ ./home-manager/ben.nix ];
       };
     };
   };

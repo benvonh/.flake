@@ -1,79 +1,33 @@
 { inputs, outputs, lib, config, pkgs, ... }:
-let
-  impure = dir: "${config.home.homeDirectory}/.flake/config/${dir}";
-  path = dir: config.lib.file.mkOutOfStoreSymlink (impure dir);
-in
 {
-  imports = [
-    inputs.neovim.homeManagerModules.nixvim
+  imports = [ inputs.nixvim.homeManagerModules.nixvim ];
+
+  home.packages = with pkgs; [
+    fd
+    ripgrep
+    ranger
+
+    htop
+    tldr
+    todo
+    pfetch
+    neofetch
+    tty-clock
+    pipes-rs
+    cava
   ];
-
-  nixpkgs = {
-    overlays = [
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable-packages
-    ];
-    config = {
-      allowUnfree = true;
-      allowUnfreePredicate = _: true;
-    };
-  };
-
-  home = {
-    username = "ben";
-    homeDirectory = "/home/ben";
-    packages = with pkgs; [
-      vlc
-      brave
-      steam
-      discord
-      mission-center
-      gnome.nautilus
-      gnome.gnome-calculator
-      gnome.gnome-disk-utility
-      gnome.gnome-system-monitor
-
-      ranger
-
-      htop
-      tldr
-      todo
-      pfetch
-      neofetch
-      tty-clock
-      pipes-rs
-      cava
-
-      fd
-      ripgrep
-
-      avizo
-      eww-wayland
-      mako
-      mpvpaper
-      rofi-wayland
-      swayidle
-      swaylock-effects
-
-      libnotify
-      pamixer
-      sox
-      wlr-randr
-      wl-clipboard
-      xdg-utils
-
-      inputs.hyprpaper.packages.${system}.default
-    ];
-  };
-
-  programs.home-manager.enable = true;
 
   programs.eza = {
     enable = true;
     enableAliases = true;
     icons = true;
     git = true;
+  };
+
+  programs.zoxide = {
+    enable = true;
+    enableZshIntegration = true;
+    enableBashIntegration = true;
   };
 
   programs.bat = {
@@ -116,8 +70,8 @@ in
     enableAutosuggestions = true;
     syntaxHighlighting.enable = true;
     defaultKeymap = "emacs";
-    initExtra = "source ${(impure "zsh/setup.zsh")}";
-    # initExtra = "source ~/.flake/config/zsh/setup.zsh";
+    initExtra = "source ./zsh/setup.zsh";
+    initExtraFirst = "neofetch";
     shellAliases = {
       ga = "git add";
       gd = "git diff";
@@ -132,11 +86,11 @@ in
       plugins = [
         {
           name = "romkatv/powerlevel10k";
-          tags = [ as:theme depth:1 ];
+          tags = [ "as:theme" "depth:1" ];
         }
         {
           name = "marlonrichert/zsh-autocomplete";
-          tags = [ as:plugin depth:1 ];
+          tags = [ "as:plugin" "depth:1" ];
         }
       ];
     };
@@ -269,7 +223,7 @@ in
     autoCmd = [
       {
         event = "FileType";
-        pattern = [ "*.c" "*.cpp" "*.nix" ];
+        pattern = [ "c" "cpp" "nix" ];
         command = "setlocal tabstop=2 shiftwidth=2 softtabstop=2";
       }
     ];
@@ -280,10 +234,10 @@ in
           "<leader>r" = "Remove buffer";
           "<leader>q" = "Quit buffer";
           "<leader>w" = "Write buffer";
-          "<leader>x" = "Quit+Write buffer";
+          "<leader>x" = "Quit & Write buffer";
           "<leader>a" = "Abandon buffers";
           "<leader>s" = "Save all buffers";
-          "<leader>z" = "Save and quit";
+          "<leader>z" = "Save & Exit";
           "<leader>v" = "Split vertical";
           "<leader>e" = "Toggle file explorer";
           "<leader>l" = "Live grep";
@@ -293,7 +247,6 @@ in
 
       telescope.enable = true;
       comment-nvim.enable = true;
-      cursorline.enable = true;
 
       lualine = {
         enable = true;
@@ -316,7 +269,7 @@ in
         diagnostics.enable = true;
         diagnostics.showOnDirs = true;
         updateFocusedFile.enable = true;
-        renderer.indentMarkers.enable = true;
+        renderer.indentMarkers.enable = false;
         renderer.icons.gitPlacement = "after";
       };
 
@@ -359,7 +312,7 @@ in
       lspkind = {
         enable = true;
         cmp.enable = true;
-        mode = "symbol_text";
+        # mode = "symbol_text";
       };
 
       luasnip.enable = true;
@@ -388,6 +341,8 @@ in
           { name = "path"; }
         ];
       };
+        
+      auto-session.enable = true;
 
       nvim-autopairs = {
         enable = true;
@@ -401,17 +356,11 @@ in
         autoStart = true;
       };
 
-      noice = {
-        enable = true;
-      };
-
       rainbow-delimiters = {
         enable = true;
       };
 
       todo-comments.enable = true;
-
-      trouble.enable = true;
 
       tmux-navigator = {
         enable = true;
@@ -419,48 +368,4 @@ in
       };
     };
   };
-
-  xdg.configFile = {
-    avizo.source = path "avizo";
-    eww.source = path "eww";
-    hypr.source = path "hypr";
-    mako.source = path "mako";
-    rofi.source = path "rofi";
-    swayidle.source = path "swayidle";
-    swaylock.source = path "swaylock";
-    wofi.source = path "wofi";
-  };
-
-  gtk = with pkgs; {
-    enable = true;
-    theme = {
-      name = "Gruvbox-Dark-BL";
-      package = gruvbox-gtk-theme;
-    };
-    iconTheme = {
-      name = "Numix-Circle";
-      package = numix-icon-theme-circle;
-    };
-    cursorTheme = {
-      size = 24;
-      name = "dist-white";
-      package = vimix-cursors;
-    };
-    font = {
-      size = 10;
-      name = "CaskaydiaCove Nerd Font";
-      package = (nerdfonts.override {
-        fonts = [ "CascadiaCode" ];
-      });
-    };
-  };
-
-  qt = {
-    enable = true;
-    platformTheme = "gtk";
-  };
-
-  systemd.user.startServices = "sd-switch";
-
-  home.stateVersion = "23.11";
 }
