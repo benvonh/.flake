@@ -1,6 +1,10 @@
 # .flake
 
-NixOS & Home Manager configurations powered by Nix flakes.
+My Nix flake for NixOS and Home Manager.
+
+## Online Install
+
+1. Install `nix` from the official [website](https://nixos.org/download.html).
 
 ## NixOS Install
 

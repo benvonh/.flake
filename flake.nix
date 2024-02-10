@@ -29,12 +29,13 @@
 
     forAllSystems = nixpkgs.lib.genAttrs systems;
   in {
-    packages = forAllSystems (system: import ./pkgs nixpkgs.legacyPackages.${system});
-    formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.alejandra);
-
     overlays = import ./overlays { inherit inputs; };
     nixosModules = import ./modules/nixos;
     homeManagerModules = import ./modules/home-manager;
+
+    packages = forAllSystems (pkgs: import ./pkgs { inherit pkgs; });
+    devShells = forAllSystems (pkgs: import ./shell.nix { inherit pkgs; });
+    formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
 
     nixosConfigurations = {
       zeph = nixpkgs.lib.nixosSystem {
