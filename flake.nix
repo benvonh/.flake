@@ -18,6 +18,8 @@
   let
     inherit (self) outputs;
 
+    lib = nixpkgs.lib // home-manager.lib;
+
     systems = [
       "i686-linux"
       "x86_64-linux"
@@ -27,15 +29,17 @@
       "aarch64-darwin"
     ];
 
-    forAllSystems = nixpkgs.lib.genAttrs systems;
+    pkgsFor = lib.genAttrs systems (system: import nixpkgs { inherit system; });
+
+    forEachSystem = f: lib.genAttrs systems (system: f pkgsFor.${system});
   in {
     overlays = import ./overlays { inherit inputs; };
     nixosModules = import ./modules/nixos;
     homeManagerModules = import ./modules/home-manager;
 
-    packages = forAllSystems (pkgs: import ./pkgs { inherit pkgs; });
-    devShells = forAllSystems (pkgs: import ./shell.nix { inherit pkgs; });
-    formatter = forAllSystems (pkgs: pkgs.nixpkgs-fmt);
+    packages = forEachSystem (pkgs: import ./pkgs { inherit pkgs; });
+    devShells = forEachSystem (pkgs: import ./shell.nix { inherit pkgs; });
+    formatter = forEachSystem (pkgs: pkgs.nixpkgs-fmt);
 
     nixosConfigurations = {
       zeph = nixpkgs.lib.nixosSystem {
