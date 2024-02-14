@@ -1,6 +1,6 @@
 # .flake
 
-My Nix flake for NixOS and Home Manager.
+My NixOS and Home Manager configuration flake.
 
 ## Dependency
 
@@ -65,6 +65,8 @@ cp /etc/nixos/hardware-configuration.nix nixos/$HOST/hardware.nix
 
 vim nixos/$HOST/default.nix
 # EDIT
+
+# Also see `modules/nixos`
 ```
 
 **Home Manager:**
@@ -77,14 +79,16 @@ vim flake.nix
 #   <your-username> = home-manager.lib.homeManagerConfiguration {
 #     pkgs = nixpkgs.legacyPackages.x86_64-linux;
 #     extraSpecialArgs = { inherit inputs outputs; };
-#     modules = [ ./home-manager/<your-username> ];
+#     modules = [ ./home/<your-username> ];
 #   };
 # };
 
-cp -r home-manager/ben home-manager/$USER
+cp -r home/ben home/$USER
 
-vim home-manager/$USER/default.nix
+vim home/$USER/default.nix
 # EDIT
+
+# Also see `modules/home`
 ```
 
 3. Switch to the NixOS and Home Manager configuration.
@@ -111,4 +115,5 @@ nix run nixpkgs#efibootmgr
 
 ## Thanks to...
 
-- [Misterio77](https://github.com/misterio77) for his [nix-starter-configs](https://github.com/misterio77/nix-starter-configs)!
+- [Misterio77](https://github.com/misterio77) for his [nix-starter-configs](https://github.com/misterio77/nix-starter-configs) template
+- [Vimjoyer](https://www.youtube.com/@vimjoyer) for his awesome YouTube content on Nix

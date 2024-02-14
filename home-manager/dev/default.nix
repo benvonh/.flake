@@ -1,20 +1,9 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 {
   imports = [
-    ./terminal
+    outputs.homeManagerModules.common
+    outputs.homeManagerModules.terminal
   ];
-
-  nixpkgs = {
-    overlays = [
-      outputs.overlays.additions
-      outputs.overlays.modifications
-      outputs.overlays.unstable-packages
-    ];
-    config = {
-      allowUnfree = false;
-      allowUnfreePredicate = _: true;
-    };
-  };
 
   home = {
     # FIXME: dynamic?
