@@ -12,7 +12,7 @@ print_status() {
     echo "${icons[$icons_idx]} $capacity%"
 }
 
-icons=(' ' ' ' ' ' ' ' ' ')
+icons=('  ' '  ' '  ' '  ' '  ')
 icons_idx=0
 low_battery=0
 prev_status=$(cat "$BATTERY/status")

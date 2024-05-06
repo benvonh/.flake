@@ -6,36 +6,47 @@
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
     ];
-    config = {
-      allowUnfree = false;
+    # Allow steam
+    config.allowUnfree = true;
+  };
+
+  nix = {
+    registry = (lib.mapAttrs (_: flake: { inherit flake; }))
+      ((lib.filterAttrs (_: lib.isType "flake")) inputs);
+    nixPath = [ "/etc/nix/path" ];
+    settings = {
+      auto-optimise-store = true;
+      experimental-features = "nix-command flakes";
+    };
+    optimise = {
+      automatic = true;
+      dates = [ "weekly" ];
+    };
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "-d --repair";
     };
   };
 
-  nix.registry = (lib.mapAttrs (_: flake: { inherit flake; }))
-    ((lib.filterAttrs (_: lib.isType "flake")) inputs);
-
-  nix.nixPath = [ "/etc/nix/path" ];
-  environment.etc = lib.mapAttrs'
-    (name: value: {
-      name = "nix/path/${name}";
-      value.source = value.flake;
-    })
-    config.nix.registry;
-
-  nix.settings = {
-    auto-optimise-store = true;
-    experimental-features = "nix-command flakes";
+  environment = {
+    etc = lib.mapAttrs'
+      (name: value: {
+        name = "nix/path/${name}";
+        value.source = value.flake;
+      })
+      config.nix.registry;
+    systemPackages = with pkgs; [
+      vim git
+    ];
   };
 
-  nix.optimise = {
-    automatic = true;
-    dates = [ "weekly" ];
-  };
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "-d --repair";
+  services = {
+    openssh.enable = true;
+    printing.enable = true;
+    pipewire.enable = true;
+    pipewire.alsa.enable = true;
+    pipewire.pulse.enable = true;
   };
 
   i18n.defaultLocale = "en_AU.UTF-8";
@@ -45,20 +56,9 @@
 
   networking.networkmanager.enable = true;
 
-  services.openssh.enable = true;
-  services.printing.enable = true;
-  services.pipewire.enable = true;
-  services.pipewire.alsa.enable = true;
-  services.pipewire.pulse.enable = true;
-
-  # Disabled for PipeWire
-  sound.enable = false;
-
   # Recommended for PipeWire
   security.rtkit.enable = true;
 
-  environment.systemPackages = with pkgs; [
-    vim
-    git
-  ];
+  # Disabled for PipeWire
+  sound.enable = false;
 }

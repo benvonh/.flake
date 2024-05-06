@@ -1,9 +1,12 @@
 { inputs, outputs, lib, config, pkgs, ... }:
 {
   imports = [
+    outputs.homeManagerModules.eww
+    outputs.homeManagerModules.kitty
     outputs.homeManagerModules.common
     outputs.homeManagerModules.desktop
     outputs.homeManagerModules.terminal
+    outputs.homeManagerModules.hyprland
   ];
 
   home = {
@@ -12,12 +15,13 @@
     packages = with pkgs; [
       vlc
       brave
-      steam
       discord
       neovide
       mission-center
     ];
   };
+
+  systemd.user.startServices = "sd-switch";
 
   home.stateVersion = "23.11";
 }

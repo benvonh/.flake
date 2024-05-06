@@ -1,4 +1,4 @@
-{ inputs, outputs, lib, config, pkgs, ... }:
+{ inputs, config, pkgs, ... }:
 let
   p10k = "${config.home.homeDirectory}/.flake/modules/home-manager/.p10k.zsh";
 in
